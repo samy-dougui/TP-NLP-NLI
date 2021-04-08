@@ -21,7 +21,8 @@ class SentencesClassification(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         #scheduler = get_linear_schedule_with_warmup(optimizer, 5, 2)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=20, gamma=0.5)
+        scheduler = torch.optim.lr_scheduler.StepLR(
+            optimizer=optimizer, step_size=2, gamma=0.5, verbose=True)
         return [optimizer], [scheduler]
 
     def training_step(self, train_batch, batch_idx):
@@ -73,7 +74,8 @@ class SentencesClassification(pl.LightningModule):
         for result in output_results:
             global_f1 = result["val_f1_acc"] * result["batch_size"]
             global_loss = result["test_loss"] * result["batch_size"]
-        metrics = {"final_test_f1_acc": global_f1, "final_test_loss": global_loss}
+        metrics = {"final_test_f1_acc": global_f1,
+                   "final_test_loss": global_loss}
         self.log_dict(metrics)
 
     def setup(self, stage="fit"):
