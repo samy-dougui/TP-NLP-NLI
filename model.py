@@ -11,7 +11,7 @@ class SentencesClassification(pl.LightningModule):
     def __init__(self, params):
         super().__init__()
         self.model = DistilBertForSequenceClassification.from_pretrained(
-            "distilbert-base-cased", num_labels=params["NUM_LABEL"]
+            "distilbert-base-cased", num_labels=params["NUM_LABEL"], , output_attentions=True
         )
 
     def forward(self, x):
@@ -20,7 +20,8 @@ class SentencesClassification(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
-        scheduler = get_linear_schedule_with_warmup(optimizer, 5, 2)
+        #scheduler = get_linear_schedule_with_warmup(optimizer, 5, 2)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=20, gamma=0.5)
         return [optimizer], [scheduler]
 
     def training_step(self, train_batch, batch_idx):
@@ -46,16 +47,14 @@ class SentencesClassification(pl.LightningModule):
             inputs["input_ids"], inputs["attention_mask"], labels=inputs["labels"]
         )
         loss = outputs.loss
-
-        predictions = torch.argmax(outputs, dim=1)
-        predictions.detach().cpu()
+        predictions = torch.argmax(outputs.logits, dim=1)
         f1_acc = f1_score(
             inputs["labels"].detach().cpu(),
             predictions.detach().cpu(),
             average="weighted",
         )
         metrics = {"val_f1_acc": f1_acc, "val_loss": loss}
-        self.log(metrics)
+        self.log_dict(metrics)
         return metrics
 
     def test_step(self, batch, batch_idx):
@@ -75,7 +74,7 @@ class SentencesClassification(pl.LightningModule):
             global_f1 = result["val_f1_acc"] * result["batch_size"]
             global_loss = result["test_loss"] * result["batch_size"]
         metrics = {"final_test_f1_acc": global_f1, "final_test_loss": global_loss}
-        self.log(metrics)
+        self.log_dict(metrics)
 
     def setup(self, stage="fit"):
         for param in self.model.base_model.parameters():
