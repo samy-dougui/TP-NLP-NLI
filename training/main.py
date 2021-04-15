@@ -3,6 +3,7 @@ import torch
 
 import pytorch_lightning as pl
 from pytorch_lightning import loggers as pl_loggers
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 from datasets import load_dataset
 
@@ -69,8 +70,17 @@ if __name__ == "__main__":
 
     tb_logger = pl_loggers.TensorBoardLogger("logs/")
 
+    # saves a file like: my/path/sample-mnist-epoch=02-val_loss=0.32.ckpt
+    checkpoint_callback = ModelCheckpoint(
+        monitor=["val_accuracy"],
+        dirpath="models/",
+        filename="distilbert-{epoch:02d}-{val_accuracy:.2f}",
+        save_top_k=3,
+        mode="max",
+    )
+
     # training
     trainer = pl.Trainer(
-        gpus=-1, max_epochs=5, logger=tb_logger
+        gpus=-1, max_epochs=10, logger=tb_logger
     )  # , limit_train_batches=1)
     trainer.fit(model, train_data_loader, validation_data_loader)
