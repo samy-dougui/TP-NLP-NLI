@@ -57,7 +57,7 @@ class SentencesClassification(pl.LightningModule):
             average="weighted",
         )
         metrics = {"val_f1_acc": f1_acc, "val_loss": loss}
-        self.log_dict(metrics, prog_bar=False)
+        self.log_dict(metrics, prog_bar=True)
         return metrics
 
     def test_step(self, batch, batch_idx):
@@ -67,7 +67,7 @@ class SentencesClassification(pl.LightningModule):
             "test_loss": metrics["val_loss"],
             "batch_size": len(batch),
         }
-        self.log_dict(metrics, prog_bar=False)
+        self.log_dict(metrics, prog_bar=True)
         return metrics
 
     def test_epoch_end(self, output_results):
@@ -77,7 +77,7 @@ class SentencesClassification(pl.LightningModule):
             global_f1 = result["val_f1_acc"] * result["batch_size"]
             global_loss = result["test_loss"] * result["batch_size"]
         metrics = {"final_test_f1_acc": global_f1, "final_test_loss": global_loss}
-        self.log_dict(metrics, prog_bar=False)
+        self.log_dict(metrics, prog_bar=True)
 
     def setup(self, stage="fit"):
         for param in self.model.base_model.parameters():
