@@ -67,5 +67,5 @@ if __name__ == "__main__":
     model = SentencesClassification(params=configs)
 
     # training
-    trainer = pl.Trainer(gpus=-1, max_epochs=5, limit_train_batches=1)
+    trainer = pl.Trainer(gpus=-1, max_epochs=5)  # , limit_train_batches=1)
     trainer.fit(model, train_data_loader, validation_data_loader)
