@@ -23,7 +23,7 @@ class SentencesClassification(pl.LightningModule):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         # scheduler = get_linear_schedule_with_warmup(optimizer, 5, 2)
         scheduler = torch.optim.lr_scheduler.StepLR(
-            optimizer=optimizer, step_size=2, gamma=0.5, verbose=True
+            optimizer=optimizer, step_size=4, gamma=0.5  # , verbose=True
         )
         return [optimizer], [scheduler]
 
@@ -92,4 +92,4 @@ class SentencesClassification(pl.LightningModule):
 
     def setup(self, stage="fit"):
         for param in self.model.base_model.parameters():
-            param.requires_grad = False
+            param.requires_grad = True
