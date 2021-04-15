@@ -84,3 +84,4 @@ if __name__ == "__main__":
         gpus=-1, max_epochs=10, logger=tb_logger
     )  # , limit_train_batches=1)
     trainer.fit(model, train_data_loader, validation_data_loader)
+    trainer.test()
