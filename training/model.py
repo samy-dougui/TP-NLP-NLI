@@ -92,4 +92,4 @@ class SentencesClassification(pl.LightningModule):
 
     def setup(self, stage="fit"):
         for param in self.model.base_model.parameters():
-            param.requires_grad = True
+            param.requires_grad = False
