@@ -47,16 +47,25 @@ if __name__ == "__main__":
     )
 
     train_data_loader = torch.utils.data.DataLoader(
-        dataset=train_data, batch_size=configs["BATCH_SIZE"], shuffle=False
+        dataset=train_data,
+        batch_size=configs["BATCH_SIZE"],
+        shuffle=False,
+        num_workers=3,
     )
     validation_data_loader = torch.utils.data.DataLoader(
-        dataset=validation_data, batch_size=configs["BATCH_SIZE"], shuffle=False
+        dataset=validation_data,
+        batch_size=configs["BATCH_SIZE"],
+        shuffle=False,
+        num_workers=3,
     )
     test_data_loader = torch.utils.data.DataLoader(
-        dataset=test_data, batch_size=configs["BATCH_SIZE"], shuffle=False
+        dataset=test_data,
+        batch_size=configs["BATCH_SIZE"],
+        shuffle=False,
+        num_workers=3,
     )
     model = SentencesClassification(params=configs)
 
     # training
-    trainer = pl.Trainer(gpus=-1,max_epochs=5, limit_train_batches=0.01)
+    trainer = pl.Trainer(gpus=-1, max_epochs=5, limit_train_batches=1)
     trainer.fit(model, train_data_loader, validation_data_loader)
