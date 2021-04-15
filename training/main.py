@@ -2,6 +2,7 @@ import os
 import torch
 
 import pytorch_lightning as pl
+from pytorch_lightning import loggers as pl_loggers
 
 from datasets import load_dataset
 
@@ -66,6 +67,10 @@ if __name__ == "__main__":
     )
     model = SentencesClassification(params=configs)
 
+    tb_logger = pl_loggers.TensorBoardLogger("logs/")
+
     # training
-    trainer = pl.Trainer(gpus=-1, max_epochs=5)  # , limit_train_batches=1)
+    trainer = pl.Trainer(
+        gpus=-1, max_epochs=5, logger=tb_logger
+    )  # , limit_train_batches=1)
     trainer.fit(model, train_data_loader, validation_data_loader)
