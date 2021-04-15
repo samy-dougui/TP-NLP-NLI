@@ -56,7 +56,12 @@ class SentencesClassification(pl.LightningModule):
             predictions.detach().cpu(),
             average="weighted",
         )
-        metrics = {"val_f1_acc": f1_acc, "val_loss": loss}
+        accuracy = (predictions == inputs["labels"]).float().sum()
+        metrics = {
+            "val_f1_acc": f1_acc,
+            "val_loss": loss,
+            "val_accuracy": accuracy / inputs["input_ids"].shape[0],
+        }
         self.log_dict(metrics, prog_bar=True)
         return metrics
 
@@ -64,6 +69,7 @@ class SentencesClassification(pl.LightningModule):
         metrics = self.validation_step(batch, batch_idx)
         metrics = {
             "test_f1_acc": metrics["val_f1_acc"],
+            "test_acc": metrics["val_accuracy"],
             "test_loss": metrics["val_loss"],
             "batch_size": len(batch),
         }
@@ -76,7 +82,12 @@ class SentencesClassification(pl.LightningModule):
         for result in output_results:
             global_f1 = result["val_f1_acc"] * result["batch_size"]
             global_loss = result["test_loss"] * result["batch_size"]
-        metrics = {"final_test_f1_acc": global_f1, "final_test_loss": global_loss}
+            global_acc = result["test_acc"] * result["batch_size"]
+        metrics = {
+            "final_test_f1_acc": global_f1,
+            "final_test_acc": global_acc,
+            "final_test_loss": global_loss,
+        }
         self.log_dict(metrics, prog_bar=True)
 
     def setup(self, stage="fit"):
