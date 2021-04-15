@@ -4,14 +4,15 @@ import pytorch_lightning as pl
 from sklearn.metrics import f1_score
 
 from transformers import DistilBertForSequenceClassification
-from transformers import get_linear_schedule_with_warmup
 
 
 class SentencesClassification(pl.LightningModule):
     def __init__(self, params):
         super().__init__()
         self.model = DistilBertForSequenceClassification.from_pretrained(
-            "distilbert-base-cased", num_labels=params["NUM_LABEL"], , output_attentions=True
+            "distilbert-base-cased",
+            num_labels=params["NUM_LABEL"],
+            output_attentions=True,
         )
 
     def forward(self, x):
@@ -20,9 +21,10 @@ class SentencesClassification(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
-        #scheduler = get_linear_schedule_with_warmup(optimizer, 5, 2)
+        # scheduler = get_linear_schedule_with_warmup(optimizer, 5, 2)
         scheduler = torch.optim.lr_scheduler.StepLR(
-            optimizer=optimizer, step_size=2, gamma=0.5, verbose=True)
+            optimizer=optimizer, step_size=2, gamma=0.5, verbose=True
+        )
         return [optimizer], [scheduler]
 
     def training_step(self, train_batch, batch_idx):
@@ -74,8 +76,7 @@ class SentencesClassification(pl.LightningModule):
         for result in output_results:
             global_f1 = result["val_f1_acc"] * result["batch_size"]
             global_loss = result["test_loss"] * result["batch_size"]
-        metrics = {"final_test_f1_acc": global_f1,
-                   "final_test_loss": global_loss}
+        metrics = {"final_test_f1_acc": global_f1, "final_test_loss": global_loss}
         self.log_dict(metrics)
 
     def setup(self, stage="fit"):
