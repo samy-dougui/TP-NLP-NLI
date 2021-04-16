@@ -6,7 +6,8 @@ from transformers import DistilBertTokenizerFast
 
 app = Flask(__name__)
 device = torch.device("cpu")
-model = torch.load("../models/best_model.pt", map_location=torch.device("cpu")).to(
+model_path = "./best_model.pt"
+model = torch.load(model_path, map_location=torch.device("cpu")).to(
     device
 )
 tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-cased")
@@ -16,7 +17,6 @@ config = {"CATEGORY": {0: "contradiction", 1: "neutral", 2: "entailment"}}
 @app.route("/api/prediction", methods=["POST"])
 def prediction():
     body = request.get_json()
-    print(body)
     try:
         hypothesis = body["hypothesis"]
     except KeyError:
