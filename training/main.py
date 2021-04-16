@@ -87,5 +87,5 @@ if __name__ == "__main__":
         val_check_interval=0.1,
         callbacks=[checkpoint_callback],
     )  # , limit_train_batches=1)
-    trainer.fit(model, train_data_loader, validation_data_loader)
+    trainer.fit(model, train_data_loader, validation_data_loader, test_data_loader)
     trainer.test()
