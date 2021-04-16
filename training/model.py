@@ -33,7 +33,11 @@ class SentencesClassification(pl.LightningModule):
             eps=1e-08,
             verbose=False,
         )
-        return [optimizer], [scheduler], ["val_loss"]
+        return {
+            "optimizer": optimizer,
+            "lr_scheduler": scheduler,
+            "monitor": "val_loss",
+        }
 
     def training_step(self, train_batch, batch_idx):
         inputs = {
