@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     # saves a file like: my/path/sample-mnist-epoch=02-val_loss=0.32.ckpt
     checkpoint_callback = ModelCheckpoint(
-        monitor=["val_accuracy"],
+        monitor="val_accuracy",
         dirpath="models/",
         filename="distilbert-{epoch:02d}-{val_accuracy:.2f}",
         save_top_k=3,
