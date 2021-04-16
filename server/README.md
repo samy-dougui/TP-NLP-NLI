@@ -7,7 +7,7 @@ This is an API example to test our trained model using http request.
 To build the container, run the following command: `docker build -t server .`
 To run the container (in interactive mode): `docker run -it --rm -p 5000:5000 server`
 
-If you want to test a different trained model, you just need to change the path (called _model_path_) at the beginning of the server.py file.
+To test a model you simply need to put the model into the server folder and update the path in the server.py
 
 The body of the request must be of the following shape:
 
