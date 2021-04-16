@@ -20,10 +20,18 @@ class SentencesClassification(pl.LightningModule):
         return outputs
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
-        # scheduler = get_linear_schedule_with_warmup(optimizer, 5, 2)
-        scheduler = torch.optim.lr_scheduler.StepLR(
-            optimizer=optimizer, step_size=4, gamma=0.5  # , verbose=True
+        optimizer = torch.optim.AdamW(params=self.model.parameters(), lr=1e-5)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode="min",
+            factor=0.1,
+            patience=5,
+            threshold=0.0001,
+            threshold_mode="rel",
+            cooldown=0,
+            min_lr=0,
+            eps=1e-08,
+            verbose=False,
         )
         return [optimizer], [scheduler]
 

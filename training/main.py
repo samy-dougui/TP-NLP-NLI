@@ -81,7 +81,11 @@ if __name__ == "__main__":
 
     # training
     trainer = pl.Trainer(
-        gpus=-1, max_epochs=10, logger=tb_logger, val_check_interval=0.1
+        gpus=-1,
+        max_epochs=10,
+        logger=tb_logger,
+        val_check_interval=0.1,
+        callbacks=[checkpoint_callback],
     )  # , limit_train_batches=1)
     trainer.fit(model, train_data_loader, validation_data_loader)
     trainer.test()
