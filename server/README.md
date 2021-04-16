@@ -5,6 +5,7 @@ This is an API example to test our trained model using http request.
 ## How to
 
 To build the container, run the following command: `docker build -t server .`
+
 To run the container (in interactive mode): `docker run -it --rm -p 5000:5000 server`
 
 To test a model you simply need to put the model into the server folder and update the path in the server.py
